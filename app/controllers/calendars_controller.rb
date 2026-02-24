@@ -32,10 +32,11 @@ class CalendarsController < ApplicationController
     plans_for_week = Plan.where(date: @todays_date..@todays_date + 6).group_by(&:date)
 
     7.times do |x|
-      current_date = @todays_date + x
-      plans_for_the_day = plans_for_week[current_date] || []
-      days = { month: current_date.month, date: current_date.day, plans: plans_for_the_day.map(&:plan), wday: wdays[current_date.wday] }
-      @week_days.push(days)
+      today_plans = []
+      plans.each do |plan|
+        today_plans.push(plan.plan) if plan.date == @todays_date + x
+      end
+      days = {month: (@todays_date + x).month, date: (@todays_date + x).day, plans:today_plans, wday: wdays[(@todays_date.wday + x) % 7]}
     end
   end
 end
